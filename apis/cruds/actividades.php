@@ -14,8 +14,8 @@ $tabla = 'actividades';
 if (isset($_GET["consultar"])){
     $sqlPredec = mysqli_query($conexionBD,"SELECT * FROM $tabla WHERE id_actividad=".$_GET["consultar"]);
     if(mysqli_num_rows($sqlPredec) > 0){
-        $empleaados = mysqli_fetch_all($sqlPredec,MYSQLI_ASSOC);
-        echo json_encode($empleaados);
+        $actividades = mysqli_fetch_all($sqlPredec,MYSQLI_ASSOC);
+        echo json_encode($actividades);
         exit();
     }
     else{  echo json_encode(["success"=>0]); }
@@ -24,12 +24,23 @@ if (isset($_GET["consultar"])){
 if (isset($_GET["buscar"])){
     $sqlPredec = mysqli_query($conexionBD,"SELECT * FROM $tabla WHERE descripcion LIKE '%".$_GET["buscar"]."%'");
     if(mysqli_num_rows($sqlPredec) > 0){
-        $empleaados = mysqli_fetch_all($sqlPredec,MYSQLI_ASSOC);
-        echo json_encode($empleaados);
+        $actividades = mysqli_fetch_all($sqlPredec,MYSQLI_ASSOC);
+        echo json_encode($actividades);
         exit();
     }
-    else{  echo json_encode(["success"=>0]); }
+    else{
+        echo json_encode(["success"=>0]);
+    }
 }
+//----------------------------------MOSTRAR ACTIVIDADES-------------------------------//
+if (isset($_GET["mostarAct"])){
+    $actividad = new stdClass();
+    $actividad -> materiales = matxactividad($_GET["mostarAct"]);
+    $actividad -> manoObra = moxactividad($_GET["mostarAct"]);
+    $actividad -> equipo = equipoxactividad($_GET["mostarAct"]);
+    echo json_encode($actividad);
+}
+//-----------------------------------------------------------------------------------//
 //borrar pero se le debe de enviar una clave ( para borrado )
 if (isset($_GET["borrar"])){
     $sqlPredec = mysqli_query($conexionBD,"DELETE FROM $tabla WHERE id_actividad=".$_GET["borrar"]);
@@ -86,10 +97,22 @@ if(isset($_GET["actualizar"])){
 }
 
 // Consulta todos los registros de la tabla $tabla
-$sqlPredec = mysqli_query($conexionBD,"SELECT * FROM $tabla ");
-if(mysqli_num_rows($sqlPredec) > 0){
-    $empleaados = mysqli_fetch_all($sqlPredec,MYSQLI_ASSOC);
-    echo json_encode($empleaados);
+
+else{ 
+    /*$sqlPredec = mysqli_query($conexionBD,"SELECT * FROM $tabla ");
+    if(mysqli_num_rows($sqlPredec) > 0){
+        $actividades = mysqli_fetch_all($sqlPredec,MYSQLI_ASSOC);
+        echo json_encode($actividades);
+    }*/
+    //echo json_encode([["success"=>0]]); 
 }
-else{ echo json_encode([["success"=>0]]); }
+function matxactividad($id_actividad){
+    return "materiales";
+}
+function moxactividad($id_actividad){
+    return "MAno de obra";
+}
+function equipoxactividad($id_actividad){
+    return "equipo";
+}
 ?>
