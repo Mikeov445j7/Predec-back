@@ -13,7 +13,7 @@ $conexionBD = new mysqli($servidor, $usuario, $contrasenia, $nombreBaseDatos);
 
 // Consulta datos y recepciona una clave para consultar dichos datos con dicha clave
 if (isset($_GET["consultar"])){
-    $sqlPredec = mysqli_query($conexionBD,"SELECT * FROM mano_obra WHERE id_mo=".$_GET["consultar"]);
+    $sqlPredec = mysqli_query($conexionBD,"SELECT * FROM equipo WHERE id_equip=".$_GET["consultar"]);
     if(mysqli_num_rows($sqlPredec) > 0){
         $empleaados = mysqli_fetch_all($sqlPredec,MYSQLI_ASSOC);
         echo json_encode($empleaados);
@@ -22,7 +22,7 @@ if (isset($_GET["consultar"])){
     else{  echo json_encode(["success"=>0]); }
 }
 if (isset($_GET["buscar"])){
-    $sqlPredec = mysqli_query($conexionBD,"SELECT * FROM mano_obra WHERE descripcion LIKE '%".$_GET["buscar"]."%'");
+    $sqlPredec = mysqli_query($conexionBD,"SELECT * FROM equipo WHERE descripcion LIKE '%".$_GET["buscar"]."%'");
     if(mysqli_num_rows($sqlPredec) > 0){
         $empleaados = mysqli_fetch_all($sqlPredec,MYSQLI_ASSOC);
         echo json_encode($empleaados);
@@ -32,7 +32,7 @@ if (isset($_GET["buscar"])){
 }
 //borrar pero se le debe de enviar una clave ( para borrado )
 if (isset($_GET["borrar"])){
-    $sqlPredec = mysqli_query($conexionBD,"DELETE FROM mano_obra WHERE id_mo=".$_GET["borrar"]);
+    $sqlPredec = mysqli_query($conexionBD,"DELETE FROM equipo WHERE id_equip=".$_GET["borrar"]);
     if($sqlPredec){
         echo json_encode(["success"=>1]);
         exit();
@@ -46,9 +46,7 @@ if(isset($_GET["insertar"])){
     $unidad=$data->unidad;
     $PU=$data->PU;
     $grupo_insumo=$data->grupo_insumo;
-    $jornal=$data->jornal;
-    $mes=$data->mes;
-    $sqlPredec = mysqli_query($conexionBD,"INSERT INTO mano_obra (descripcion, unidad, PU, jornal, mes, grupo_insumo) VALUES('$descripcion', '$unidad', '$PU', '$jornal', '$mes', '$grupo_insumo') ");
+    $sqlPredec = mysqli_query($conexionBD,"INSERT INTO equipo (descripcion, unidad, PU, grupo_insumo) VALUES('$descripcion', '$unidad', '$PU', '$grupo_insumo') ");
     echo json_encode(["success"=>1]);
     exit();
 }
@@ -57,20 +55,19 @@ if(isset($_GET["actualizar"])){
     
     $data = json_decode(file_get_contents("php://input"));
 
-    $id_mo=(isset($data->id))?$data->id:$_GET["actualizar"];
+    $id_equip=(isset($data->id))?$data->id:$_GET["actualizar"];
     $descripcion=$data->descripcion;
     $unidad=$data->unidad;
     $PU=$data->PU;
     $grupo_insumo=$data->grupo_insumo;
-    $jornal=$data->jornal;
-    $mes=$data->mes;
-    $sqlPredec = mysqli_query($conexionBD,"UPDATE mano_obra SET descripcion ='$descripcion' , unidad='$unidad' , PU='$PU', jornal= '$jornal', mes='$mes',  grupo_insumo='$grupo_insumo' WHERE id_mo='$id_mo'");
-    echo json_encode(["success"=>1, "mensaje:"=>2]);
+   
+    $sqlPredec = mysqli_query($conexionBD,"UPDATE equipo SET descripcion ='$descripcion' , unidad='$unidad', PU='$PU', grupo_insumo='$grupo_insumo' WHERE id_equip='$id_equip'");
+    echo json_encode(["success"=>1]);
     exit();
 }
 
-// Consulta todos los registros de la tabla mano_obra
-$sqlPredec = mysqli_query($conexionBD,"SELECT * FROM mano_obra ");
+// Consulta todos los registros de la tabla equipo
+$sqlPredec = mysqli_query($conexionBD,"SELECT * FROM equipo ");
 if(mysqli_num_rows($sqlPredec) > 0){
     $empleaados = mysqli_fetch_all($sqlPredec,MYSQLI_ASSOC);
     echo json_encode($empleaados);
