@@ -7,8 +7,8 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 
 // Conecta a la base de datos  con usuario, contraseña y nombre de la BD
 global $servidor;
-//$servidor = "localhost:3306"; $usuario = "boliviad_bduser1"; $contrasenia = "Prede02082016"; $nombreBaseDatos = "boliviad_predeconst";
-$servidor = "localhost"; $usuario = "root"; $contrasenia = ""; $nombreBaseDatos = "predeconst";
+$servidor = "localhost:3306"; $usuario = "boliviad_bduser1"; $contrasenia = "Prede02082016"; $nombreBaseDatos = "boliviad_predeconst";
+//$servidor = "localhost"; $usuario = "root"; $contrasenia = ""; $nombreBaseDatos = "predeconst";
 $conexionBD = new mysqli($servidor, $usuario, $contrasenia, $nombreBaseDatos);
 $tabla = "preda_us";
 
@@ -38,13 +38,11 @@ if(isset($_GET["insertar"])){
     $apellido=$data->apellido;
     if($mail!=''&&$password!=''&&$nombre!=''&&$apellido!=''){
         $sqlPredec = mysqli_query($conexionBD,"INSERT INTO `preda_us`(`mail`, `password`, `nombre`, `apellido`, `genero`, `acercade`, `ip_user`, `img_profile`, `uninique_id`, `activo`, `distri`) 
-                                                             VALUES ('$mail','$password',' $nombre','$apellido','5','6','7','8','9','10','11')");
-        if($sqlPredec){
+                                                            VALUES ('$mail','$password',' $nombre','$apellido','5','6','7','8','9','10','11')");
             echo json_encode(["success"=>1]);
-        }
-        
+            exit();
     }
-    exit();
+    
 }
 if (isset($_GET["login"])){
     $data = json_decode(file_get_contents("php://input"));

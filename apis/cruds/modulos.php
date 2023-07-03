@@ -6,8 +6,8 @@ header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
 // Conecta a la base de datos  con usuario, contraseña y nombre de la BD
-//$servidor = "localhost:3306"; $usuario = "boliviad_bduser1"; $contrasenia = "Prede02082016"; $nombreBaseDatos = "boliviad_predeconst";
-$servidor = "localhost"; $usuario = "root"; $contrasenia = ""; $nombreBaseDatos = "predeconst";
+$servidor = "localhost:3306"; $usuario = "boliviad_bduser1"; $contrasenia = "Prede02082016"; $nombreBaseDatos = "boliviad_predeconst";
+//$servidor = "localhost"; $usuario = "root"; $contrasenia = ""; $nombreBaseDatos = "predeconst";
 $conexionBD = new mysqli($servidor, $usuario, $contrasenia, $nombreBaseDatos);
 $tabla = 'modulos';
 
@@ -85,9 +85,7 @@ if(isset($_GET["agregarAct"])){
 }
 // Actualiza datos pero recepciona datos de nombre, correo y una clave para realizar la actualización
 if(isset($_GET["actualizar"])){
-    
     $data = json_decode(file_get_contents("php://input"));
-
     $id_modulo=(isset($data->id))?$data->id:$_GET["actualizar"];
     $orden=$data->orden;
     $nombre=$data->nombre;
@@ -99,6 +97,7 @@ if(isset($_GET["actualizar"])){
     echo json_encode(["success"=>1, "mensaje:"=>2]);
     exit();
 }
+
 if (isset($_GET["modulo"])){
     $sqlPredec = mysqli_query($conexionBD,"SELECT rel_actv_modulo.id_rel_am, actividades.id_actividad, actividades.descripcion, actividades.unidad, rel_actv_modulo.catidad, rel_actv_modulo.unitario  FROM actividades, rel_actv_modulo WHERE rel_actv_modulo.id_modulo = '".$_GET["modulo"]."' AND actividades.id_actividad = rel_actv_modulo.id_actividad ORDER BY orden");
     if(mysqli_num_rows($sqlPredec) > 0){
@@ -110,10 +109,5 @@ if (isset($_GET["modulo"])){
 }
 
 // Consulta todos los registros de la tabla $tabla
-$sqlPredec = mysqli_query($conexionBD,"SELECT * FROM $tabla ");
-if(mysqli_num_rows($sqlPredec) > 0){
-    $empleaados = mysqli_fetch_all($sqlPredec,MYSQLI_ASSOC);
-    echo json_encode($empleaados);
-}
-else{ echo json_encode([["success"=>0]]); }
+
 ?>

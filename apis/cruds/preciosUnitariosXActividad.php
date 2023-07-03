@@ -10,13 +10,16 @@ $servidor = "localhost:3306"; $usuario = "boliviad_bduser1"; $contrasenia = "Pre
 //$servidor = "localhost"; $usuario = "root"; $contrasenia = ""; $nombreBaseDatos = "predeconst";
 $conexionBD = new mysqli($servidor, $usuario, $contrasenia, $nombreBaseDatos);
 
-$tabla = 'proyectos';
-$id_proyec = 4;
-$id_mod = 4;
-$t_precios = 1;
-$consulta = '';
-$id_actividad= 5;
-$Ben_Soc = 0;
+if(isset($_GET["PUXact"])){
+    
+    $data = json_decode(file_get_contents("php://input"));
+    echo "holaaaa";
+    $id_proyec = $data->id_proyec;
+    $id_mod = $data->id_mod;
+    $id_actividad= $data->id_actividad;
+    $t_precios = 1;
+    $consulta = '';
+    $Ben_Soc = 0;
     $iva = 0;
     $he_men = 0;
     $g_grales = 0;
@@ -45,18 +48,19 @@ $Ben_Soc = 0;
      
             
     //$s = mysql_query("SELECT actividades.descripcion,  FROM actividades WHERE id_actividad = '".$id_actividad ."'")
-    $s = mysqli_query($conexionBD, "SELECT actividades.descripcion, actividades.unidad, rel_actv_modulo.catidad
-                        FROM actividades, rel_actv_modulo 
-                        WHERE rel_actv_modulo.id_modulo = '".$id_mod."'
-                        AND actividades.id_actividad = ".$id_actividad."
+    $s = mysqli_query($conexionBD, "SELECT modulos.nombre, actividades.descripcion, actividades.unidad, rel_actv_modulo.catidad
+                        FROM actividades, rel_actv_modulo, modulos
+                        WHERE modulos.id_modulo = '".$id_mod."' 
+                        AND rel_actv_modulo.id_modulo = '".$id_mod."' 
+                        AND actividades.id_actividad = ".$id_actividad." 
                         AND actividades.id_actividad = rel_actv_modulo.id_actividad");
         if(mysqli_num_rows($s) > 0){
             
                while($r = mysqli_fetch_array($s)){
-               
-                        $desc = $r[0];
-                        $unidad = $r[1];
-                        $cantidad = $r[2];
+                        $nModulo = $r[0];
+                        $desc = $r[1];
+                        $unidad = $r[2];
+                        $cantidad = $r[3];
                         
                     }
                  $cadena = $cadena."<table style = ' border:1px solid #000; border-spacing: 0; width:100%;'>";
@@ -70,7 +74,7 @@ $Ben_Soc = 0;
                                 $cadena = $cadena."<td style='text-align: right; border:none;'>".round($cantidad,2)." ".$unidad ."</td>";
                             $cadena = $cadena."</tr>";
                             $cadena = $cadena."<tr>";
-                                $cadena = $cadena."<td style='border:none;'>Proyecto: ".$nom_proy."</td>";
+                                $cadena = $cadena."<td style='border:none;'>MODULO: ".$nModulo."  Proyecto: ".$nom_proy."</td>";
                                 $cadena = $cadena."<td style='border:none;'></td>";
                                 $cadena = $cadena."<td style='border:none;'></td>";
                                 $cadena = $cadena."<td style='border:none;'></td>";
@@ -441,4 +445,5 @@ $Ben_Soc = 0;
                 $cadena = $cadena."</table>";
            
      echo json_encode(["html"=>$cadena]); 
+}
 ?>

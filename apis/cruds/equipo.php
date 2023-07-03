@@ -6,13 +6,24 @@ header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
 // Conecta a la base de datos  con usuario, contraseña y nombre de la BD
-//$servidor = "localhost:3306"; $usuario = "boliviad_bduser1"; $contrasenia = "Prede02082016"; $nombreBaseDatos = "boliviad_predeconst";
-$servidor = "localhost"; $usuario = "root"; $contrasenia = ""; $nombreBaseDatos = "predeconst";
+$servidor = "localhost:3306"; $usuario = "boliviad_bduser1"; $contrasenia = "Prede02082016"; $nombreBaseDatos = "boliviad_predeconst";
+//$servidor = "localhost"; $usuario = "root"; $contrasenia = ""; $nombreBaseDatos = "predeconst";
 $conexionBD = new mysqli($servidor, $usuario, $contrasenia, $nombreBaseDatos);
 
+if (isset($_GET["listar"])){
+    $sqlPredec = mysqli_set_charset($conexionBD, "utf8"); 
+    $sqlPredec = mysqli_query($conexionBD,"SELECT * FROM equipo");
+    if(mysqli_num_rows($sqlPredec) > 0){
+        $empleaados = mysqli_fetch_all($sqlPredec,MYSQLI_ASSOC);
+        echo json_encode($empleaados);
+        exit();
+    }
+    else{  echo json_encode(["success"=>0]); }
+}
 
 // Consulta datos y recepciona una clave para consultar dichos datos con dicha clave
 if (isset($_GET["consultar"])){
+    $sqlPredec = mysqli_set_charset($conexionBD, "utf8"); 
     $sqlPredec = mysqli_query($conexionBD,"SELECT * FROM equipo WHERE id_equip=".$_GET["consultar"]);
     if(mysqli_num_rows($sqlPredec) > 0){
         $empleaados = mysqli_fetch_all($sqlPredec,MYSQLI_ASSOC);
@@ -22,6 +33,7 @@ if (isset($_GET["consultar"])){
     else{  echo json_encode(["success"=>0]); }
 }
 if (isset($_GET["buscar"])){
+    $sqlPredec = mysqli_set_charset($conexionBD, "utf8"); 
     $sqlPredec = mysqli_query($conexionBD,"SELECT * FROM equipo WHERE descripcion LIKE '%".$_GET["buscar"]."%'");
     if(mysqli_num_rows($sqlPredec) > 0){
         $empleaados = mysqli_fetch_all($sqlPredec,MYSQLI_ASSOC);
@@ -67,10 +79,5 @@ if(isset($_GET["actualizar"])){
 }
 
 // Consulta todos los registros de la tabla equipo
-$sqlPredec = mysqli_query($conexionBD,"SELECT * FROM equipo ");
-if(mysqli_num_rows($sqlPredec) > 0){
-    $empleaados = mysqli_fetch_all($sqlPredec,MYSQLI_ASSOC);
-    echo json_encode($empleaados);
-}
-else{ echo json_encode([["success"=>0]]); }
+
 ?>
