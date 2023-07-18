@@ -59,36 +59,17 @@
         }
         $sqlPredec = mysqli_query($conexionBD,"SELECT * FROM modulos WHERE id_proyec = $id_proyec ORDER by orden ASC");
             if(mysqli_num_rows($sqlPredec) > 0){
-                //$modulo = mysqli_fetch_all($sqlPredec,MYSQLI_ASSOC);
-                //echo json_encode($modulo);
                 while($row3 = mysqli_fetch_array($sqlPredec)){
                 
                     $actiXmods = [
-                        //'proyecto'=> $proy,
                         'modulo'=> ['id_modulo' => $row3[0], 
                                     'nombre' => $row3[3], 
                                     'orden'=>$row3[2],
                                     'codigo'=>$row3[4],
-                                    'fecha_inicio'=>$row2[6]
+                                    'fecha_inicio'=>$row3[6]
                                     ],
                         'listadeActiv'=>actiXmods($conexionBD,$row3[0],$Ben_Soc,$iva,$he_men,$g_grales,$utilidad,$IT)
                     ];
-                    /*$datamodulo = [
-                        'id_modulo' => $row3[0], 
-                        'nombre' => $row3[3], 
-                        'orden'=>$row3[2],
-                        'codigo'=>$row3[4],
-                        'fecha_inicio'=>$row2[6]
-                    ];
-                    $actiXmods -> proyecto = $proy;
-                    $actiXmods -> modulo = $datamodulo;
-                    $actiXmods -> listadeActiv = actiXmods($conexionBD,$row3[0],$Ben_Soc,$iva,$he_men,$g_grales,$utilidad,$IT);
-                    
-                    $sum = 0;
-                    foreach($actiXmods->listadeActiv as $actv=>$value){
-                        $sum = $sum + $value['parcial'];
-                    }
-                    $actiXmods -> totalModulo = $sum;*/
                     array_push($modsXproyecto, $actiXmods);
                 }
                 $proyecto -> proyecto = $proy;
@@ -169,7 +150,6 @@
                     'M' => $M,
                     'P' => $P,
                     'Q' => $Q
-
                 ];
 
                 array_push($listadeActiv, $actividad);
@@ -253,10 +233,5 @@
         }
         return $F;
     }
-    function E($N,$Ben_Soc){
-        //E Beneficios Sociales 55.00% de (N) =
-        $b_S = $Ben_Soc/100;
-        $e = $N * $b_S;
-        return $e;
-    }
+
 ?>
