@@ -7,8 +7,9 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 
 // Conecta a la base de datos  con usuario, contraseña y nombre de la BD
 global $servidor;
-$servidor = "localhost:3306"; $usuario = "boliviad_bduser1"; $contrasenia = "Prede02082016"; $nombreBaseDatos = "boliviad_predeconst";
+//$servidor = "localhost:3306"; $usuario = "boliviad_bduser1"; $contrasenia = "Prede02082016"; $nombreBaseDatos = "boliviad_predeconst";
 //$servidor = "localhost"; $usuario = "root"; $contrasenia = ""; $nombreBaseDatos = "predeconst";
+$servidor = "localhost:3306"; $usuario = "www_root"; $contrasenia = "RcomiC150980"; $nombreBaseDatos = "www_predeconst";
 global $conexionBD;
 $conexionBD = new mysqli($servidor, $usuario, $contrasenia, $nombreBaseDatos);
 global $tabla;
@@ -16,6 +17,7 @@ $tabla = 'actividades';
 
 // Consulta datos y recepciona una clave para consultar dichos datos con dicha clave
 if (isset($_GET["consultar"])){
+    $sqlPredec = mysqli_set_charset($conexionBD, "utf8");
     $sqlPredec = mysqli_query($conexionBD,"SELECT * FROM $tabla WHERE id_actividad=".$_GET["consultar"]);
     if(mysqli_num_rows($sqlPredec) > 0){
         $actividades = mysqli_fetch_all($sqlPredec,MYSQLI_ASSOC);
@@ -26,6 +28,7 @@ if (isset($_GET["consultar"])){
 }
 
 if (isset($_GET["buscar"])){
+    $sqlPredec = mysqli_set_charset($conexionBD, "utf8");
     $sqlPredec = mysqli_query($conexionBD,"SELECT * FROM $tabla WHERE descripcion LIKE '%".$_GET["buscar"]."%'");
     if(mysqli_num_rows($sqlPredec) > 0){
         $actividades = mysqli_fetch_all($sqlPredec,MYSQLI_ASSOC);
@@ -75,7 +78,7 @@ if (isset($_GET["mostarAct"])){
 //-----------------------------------------------------------------------------------//
 //borrar pero se le debe de enviar una clave ( para borrado )
 if (isset($_GET["borrar"])){
-    $sqlPredec = mysqli_query($conexionBD,"DELETE FROM $tabla WHERE id_actividad=".$_GET["borrar"]);
+    $sqlPredec = mysqli_query($conexionBD,"DELETE FROM actividades WHERE id_actividad=".$_GET["borrar"]);
     if($sqlPredec){
         echo json_encode(["success"=>1]);
         exit();

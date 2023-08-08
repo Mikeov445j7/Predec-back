@@ -6,8 +6,9 @@
     header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
     
     // Conecta a la base de datos  con usuario, contraseña y nombre de la BD
-    $servidor = "localhost:3306"; $usuario = "boliviad_bduser1"; $contrasenia = "Prede02082016"; $nombreBaseDatos = "boliviad_predeconst";
+    //$servidor = "localhost:3306"; $usuario = "boliviad_bduser1"; $contrasenia = "Prede02082016"; $nombreBaseDatos = "boliviad_predeconst";
     //$servidor = "localhost"; $usuario = "root"; $contrasenia = ""; $nombreBaseDatos = "predeconst";
+    $servidor = "localhost:3306"; $usuario = "www_root"; $contrasenia = "RcomiC150980"; $nombreBaseDatos = "www_predeconst";
     $conexionBD = new mysqli($servidor, $usuario, $contrasenia, $nombreBaseDatos);
 
     if(isset($_GET["RpXmod"])){
@@ -81,7 +82,7 @@
     }
     function actiXmods($conexionBD, $id_modulo, $Ben_Soc,$iva,$he_men,$g_grales,$utilidad,$IT){
         $listadeActiv = array();
-        
+        $sqlPredec = mysqli_set_charset($conexionBD, "utf8");
         $sqlPredec = mysqli_query($conexionBD,
         "SELECT rel_actv_modulo.id_rel_am, actividades.id_actividad, actividades.descripcion, actividades.unidad, 
                 rel_actv_modulo.catidad, rel_actv_modulo.unitario
