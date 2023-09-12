@@ -41,8 +41,6 @@ if (isset($_GET["buscar"])){
     else{  echo json_encode(["success"=>0]); }
 }
 
-
-
 //MODULOS Inserta un nuevo registro y recepciona en método post los datos de nombre y correo
 if(isset($_GET["insertar"])){
     $data = json_decode(file_get_contents("php://input"));
@@ -69,7 +67,7 @@ if(isset($_GET["actualizar"])){
     $nombre=$data->nombre;
     $codigo=$data->codigo;
     $id_modOr=$data->id_modOr;
-    $fecha_inicio=$data-> fecha_inicio;
+    $fecha_inicio=$data->fecha_inicio;
     $ordenado=$data->ordenado;
     $sqlPredec = mysqli_query($conexionBD,
         "UPDATE modulos 

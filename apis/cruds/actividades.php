@@ -27,6 +27,21 @@ if (isset($_GET["consultar"])){
     else{  echo json_encode(["success"=>0]); }
 }
 
+//--------mis actividades---------------------///
+if (isset($_GET["misActividades"])){
+    $data = json_decode(file_get_contents("php://input"));
+    $id_us=$data->id_us;
+    $sqlPredec = mysqli_set_charset($conexionBD, "utf8");
+    $sqlPredec = mysqli_query($conexionBD,"SELECT * FROM actividades WHERE id_us=".$id_us);
+    if(mysqli_num_rows($sqlPredec) > 0){
+        $actividades = mysqli_fetch_all($sqlPredec,MYSQLI_ASSOC);
+        echo json_encode($actividades);
+        exit();
+    }
+    else{echo json_encode(["success"=>0]); }
+}
+/// mis actividades----------------
+
 if (isset($_GET["buscar"])){
     $sqlPredec = mysqli_set_charset($conexionBD, "utf8");
     $sqlPredec = mysqli_query($conexionBD,"SELECT * FROM $tabla WHERE descripcion LIKE '%".$_GET["buscar"]."%'");
@@ -101,7 +116,8 @@ if(isset($_GET["insertar"])){
                                                 VALUES ('$tipo', '$descripcion', '$unidad', '$duenio', '$id_us', '$grupos_actividad', '$sub_grupo_actividad') ");
             if($sqlPredec) {
                 $last_id = $conexionBD->insert_id;
-                echo json_encode(["lastId:"=>$last_id]);
+                echo $last_id;
+                //echo json_encode(["lastId:"=>$last_id]);
             } else {
                 echo json_encode(["success:"=>0]);
             }

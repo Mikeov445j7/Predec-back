@@ -49,7 +49,7 @@ if(isset($_GET["pxua"])){
 
     $sqlPredec = mysqli_query($conexionBD,
     "SELECT rel_actv_modulo.id_rel_am, actividades.id_actividad, actividades.descripcion, actividades.unidad, 
-            rel_actv_modulo.catidad, rel_actv_modulo.unitario, modulos.nombre, rel_actv_modulo.fecha_ini_actv, rel_actv_modulo.fecha_fin_actv
+            rel_actv_modulo.catidad, rel_actv_modulo.unitario, modulos.nombre, rel_actv_modulo.fecha_ini_actv, rel_actv_modulo.fecha_fin_actv, actividades.orden 
      FROM actividades, rel_actv_modulo, modulos 
      WHERE rel_actv_modulo.id_modulo = '".$id_modulo."' 
      AND actividades.id_actividad = rel_actv_modulo.id_actividad 
@@ -69,6 +69,7 @@ if(isset($_GET["pxua"])){
                 'modulo' => $row2[6],
                 'fechaIni'=> $row2[7],
                 'fechaFin'=> $row2[8],
+                'orden'=> $row2[9],
                 'id_actividad'=> $row2[1],
                 'actividad' => $row2[2],
                 'unidad' => $row2[3],

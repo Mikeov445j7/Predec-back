@@ -58,7 +58,7 @@
 function modulos($id_proyec, $conexionBD){
     $modsXproyecto = Array();
     //$actiXmods = new stdClass();
-    
+    $sql2 = mysqli_set_charset($conexionBD, "utf8"); 
     $sqlPredec = mysqli_query($conexionBD,"SELECT id_modulo, nombre, orden, codigo, fecha_inicio FROM modulos WHERE id_proyec = '".$id_proyec."' ORDER by orden ASC");
     if(mysqli_num_rows($sqlPredec) > 0){
         while($row3 = mysqli_fetch_array($sqlPredec)){
