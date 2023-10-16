@@ -28,8 +28,7 @@
     $nom_proy = "";
     $cadena ='';
     $sql2 = mysqli_set_charset($conexionBD, "utf8"); 
-    $sql2 = mysqli_query($conexionBD,"SELECT * FROM proyectos WHERE id_proyec = '".$id_proyec."'")
-    or die(mysqli_error());
+    $sql2 = mysqli_query($conexionBD,"SELECT * FROM proyectos WHERE id_proyec = '".$id_proyec."'");
     if(mysqli_num_rows($sql2) > 0){
        while($row2 = mysqli_fetch_array($sql2)){
             $proy ->id_proyec = $row2[0];
@@ -46,7 +45,7 @@
             $proy ->lugar = $row2[14];
             $proyecto = [
                 'proyecto' => $proy,
-                'modulos' => modulos($id_proyec,  $conexionBD)
+                'modulos' => modulos($id_proyec, $conexionBD)
             ];
 
         }
@@ -59,14 +58,17 @@ function modulos($id_proyec, $conexionBD){
     $modsXproyecto = Array();
     //$actiXmods = new stdClass();
     $sql2 = mysqli_set_charset($conexionBD, "utf8"); 
-    $sqlPredec = mysqli_query($conexionBD,"SELECT id_modulo, nombre, orden, codigo, fecha_inicio FROM modulos WHERE id_proyec = '".$id_proyec."' ORDER by orden ASC");
+    $sqlPredec = mysqli_query($conexionBD,
+                "SELECT id_modulo, nombre, orden, codigo, fecha_inicio 
+                FROM modulos WHERE id_proyec = '".$id_proyec."' 
+                ORDER by orden ASC");
     if(mysqli_num_rows($sqlPredec) > 0){
         while($row3 = mysqli_fetch_array($sqlPredec)){
-            $i = actiXmods($conexionBD, $row3[0]);
+            /*$i = actiXmods($conexionBD, $id_proyec, $row3[0]);
             $sum=0;
             foreach($i as $e=>$value){
                 $sum = $sum + $value['costoT'];
-            }
+            }*/
 
         $actiXmods =[
             "id_modulo" => $row3[0],
@@ -74,7 +76,7 @@ function modulos($id_proyec, $conexionBD){
             "orden" => $row3[2],
             "codigo" => $row3[3],
             "fecha_inicio" => $row3[4],
-            "insumos" => actiXmods($conexionBD, $row3[0]),
+            "insumos" => actiXmods($conexionBD, $id_proyec, $row3[0]),
             "TotalModulo" => $sum
         ];
        
@@ -85,7 +87,7 @@ function modulos($id_proyec, $conexionBD){
     }
     else{  echo json_encode(["success"=>0]); }    
 }
-function actiXmods($conexionBD, $id_modulo){
+function actiXmods($conexionBD, $id_proyec, $id_modulo){
     $sqlPredec = mysqli_set_charset($conexionBD, "utf8"); 
     $listadeActiv = array();
     $dataActv = new stdClass();
@@ -102,7 +104,8 @@ function actiXmods($conexionBD, $id_modulo){
             materiales.PU AS pUnitario,
             SUM(rel_actv_mat.cant_por_acti),
             materiales.unidad AS insumoUnidad,
-            SUM(rel_actv_modulo.catidad * rel_actv_mat.cant_por_acti) AS TotalCant
+            SUM(rel_actv_modulo.catidad * rel_actv_mat.cant_por_acti) AS TotalCant, 
+            materiales.id_mat AS idInsumo
     FROM actividades, rel_actv_modulo, rel_actv_mat, materiales 
     WHERE rel_actv_modulo.id_modulo = $id_modulo
     AND actividades.id_actividad = rel_actv_modulo.id_actividad 
@@ -113,8 +116,8 @@ function actiXmods($conexionBD, $id_modulo){
 
     if(mysqli_num_rows($sqlPredec) > 0){
         while($row2 = mysqli_fetch_array($sqlPredec)){
-        
-            $costoT = $row2[12] * $row2[9];
+            $pu = intersecc($conexionBD, 'pu_us_mat', $id_proyec, $row2[13], $row2[9]);
+            $costoT = $row2[13] * $pu;
             $dataActv = [
                 "modulo" => $row2[0],
                 "cantXmodulo" => $row2[1],
@@ -125,7 +128,7 @@ function actiXmods($conexionBD, $id_modulo){
                 "idMaterial" => $row2[6],
                 "insumo" => $row2[7],
                 "cantXactiv"  => $row2[8],
-                "pUnitario"  => round($row2[9],2),
+                "pUnitario"  => intersecc($conexionBD, 'pu_us_mat', $id_proyec, $row2[13], $row2[9]),
                 "sumatoria" => $row2[10],
                 "costoT" => round($costoT,2),
                 "totalCantidad" =>round($row2[12],2)
@@ -141,7 +144,23 @@ function actiXmods($conexionBD, $id_modulo){
         return $listadeActiv;
     }
 }
+function intersecc($conexionBD, $tabla, $id_proyecto, $id_insumo, $p_insumo){
+    $sqlPredec = mysqli_set_charset($conexionBD, "utf8"); 
+    $sqlPredec = mysqli_query($conexionBD,
+                 "SELECT id, pu_us
+                  FROM $tabla
+                  WHERE id_proyecto = '$id_proyecto'
+                  AND id_insumo = '$id_insumo'");
+        if(mysqli_num_rows($sqlPredec) > 0){
+            while($row2 = mysqli_fetch_array($sqlPredec)){
+                return $row2[1];
+            }
 
+        }else { 
+            return $p_insumo;
+        }
+
+}
      
 
 

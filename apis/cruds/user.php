@@ -24,7 +24,7 @@ if (isset($_GET["listar"])){
 }
 if (isset($_GET["buscar"])){
     $sqlPredec = mysqli_set_charset($conexionBD, "utf8");
-    $sqlPredec = mysqli_query($conexionBD,"SELECT * FROM preda_us WHERE ci LIKE '%".$_GET["buscar"]."%' OR mail LIKE '%".$_GET["buscar"]."%'");
+    $sqlPredec = mysqli_query($conexionBD,"SELECT * FROM preda_us WHERE cel LIKE '%".$_GET["buscar"]."%' OR mail LIKE '%".$_GET["buscar"]."%'");
     if(mysqli_num_rows($sqlPredec) > 0){
         $empleaados = mysqli_fetch_all($sqlPredec,MYSQLI_ASSOC);
         echo json_encode($empleaados);

@@ -67,7 +67,7 @@ if(isset($_GET["RmanoObrXmod"])){
                             'orden'=>$row3[2],
                             'codigo'=>$row3[4],
                             'fecha_inicio'=>$row3[6],
-                            'listadeinsumos'=>actiXmods($conexionBD,$row3[0],$Ben_Soc,$iva,$he_men,$g_grales,$utilidad,$IT)
+                            'listadeinsumos'=>actiXmods($conexionBD,$id_proyec,$row3[0],$Ben_Soc,$iva,$he_men,$g_grales,$utilidad,$IT)
                             ],
                 
             ];
@@ -80,7 +80,7 @@ if(isset($_GET["RmanoObrXmod"])){
     }
     else{  echo json_encode(["success"=>0]); }    
 }
-function actiXmods($conexionBD, $id_modulo, $Ben_Soc,$iva,$he_men,$g_grales,$utilidad,$IT){
+function actiXmods($conexionBD, $id_proyec, $id_modulo, $Ben_Soc,$iva,$he_men,$g_grales,$utilidad,$IT){
     $listadeActiv = array();
     $actividad = new stdClass();
     $materiales = array();
@@ -102,7 +102,7 @@ function actiXmods($conexionBD, $id_modulo, $Ben_Soc,$iva,$he_men,$g_grales,$uti
                 'descripcion' => $row2[2],
                 'unidad' => $row2[3],
                 'cantidad' =>  $row2[4],
-                'Materiales' => A($conexionBD, $row2[1], $cantXmod)
+                'Materiales' => A($conexionBD, $id_proyec, $row2[1], $cantXmod)
             ];
             array_push($listadeActiv, $dataActv);
         }
@@ -124,23 +124,24 @@ function actiXmods($conexionBD, $id_modulo, $Ben_Soc,$iva,$he_men,$g_grales,$uti
         return $listadeActiv;
     }
 }
-function A($conexionBD, $id, $cantXmod){
+function A($conexionBD, $id_proyec, $id, $cantXmod){
     $actividad = new stdClass();
     $materiales = array();
     $sqlPredec = mysqli_set_charset($conexionBD, "utf8"); 
     $sqlPredec = mysqli_query($conexionBD,
-                              "SELECT mano_obra.descripcion,  rel_actv_mo.id_rel_mat_mo, rel_actv_mo.cant, mano_obra.unidad, mano_obra.PU
+                              "SELECT mano_obra.descripcion,  rel_actv_mo.id_rel_mat_mo, rel_actv_mo.cant, mano_obra.unidad, mano_obra.PU, mano_obra.id_mo
                                FROM actividades, mano_obra, rel_actv_mo
-                               WHERE rel_actv_mo.id_actividad = '$id' AND rel_actv_mo.id_mo = mano_obra.id_mo AND actividades.id_actividad = rel_actv_mo.id_actividad ");
+                               WHERE rel_actv_mo.id_actividad = '$id' AND rel_actv_mo.id_mo = mano_obra.id_mo AND actividades.id_actividad = rel_actv_mo.id_actividad ORDER by jerarquia ASC");
         if(mysqli_num_rows($sqlPredec) > 0){
                while($row2 = mysqli_fetch_array($sqlPredec)){
-                    $parcial = $row2[2] * $row2[4];
+                    $pu = intersecc($conexionBD, 'pu_us_mo', $id_proyec, $row2[5], $row2[4]);
+                    $parcial = $row2[2] * $pu;
                     $parcial = $parcial * $cantXmod;
                     $cantXmodT = $row2[2] * $cantXmod;
                     $actividad = [
                         'insumo' => $row2[0],
                         'unidad' => $row2[3],
-                        'PU' => $row2[4],
+                        'PU' => $pu,
                         'parcial' => round($parcial),
                         'cantidad' => round($row2[2]),
                         'cantXmod' => round($cantXmodT,2)
@@ -154,6 +155,24 @@ function A($conexionBD, $id, $cantXmod){
             
         }
         return $materiales; 
+}
+
+function intersecc($conexionBD, $tabla, $id_proyecto, $id_insumo, $p_insumo){
+    $sqlPredec = mysqli_set_charset($conexionBD, "utf8"); 
+    $sqlPredec = mysqli_query($conexionBD,
+                 "SELECT id, pu_us
+                  FROM $tabla
+                  WHERE id_proyecto = '$id_proyecto'
+                  AND id_insumo = '$id_insumo'");
+        if(mysqli_num_rows($sqlPredec) > 0){
+            while($row2 = mysqli_fetch_array($sqlPredec)){
+                return $row2[1];
+            }
+
+        }else { 
+            return $p_insumo;
+        }
+
 }
 
 ?>

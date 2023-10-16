@@ -29,8 +29,7 @@ if(isset($_GET["pxua"])){
     $nom_proy = "";
     $cadena ='';
  
-    $sql2 = mysqli_query($conexionBD,"SELECT * FROM proyectos WHERE id_proyec = '".$id_proyec."'")
-                or die(mysqli_error());
+    $sql2 = mysqli_query($conexionBD,"SELECT * FROM proyectos WHERE id_proyec = '".$id_proyec."'");
         if(mysqli_num_rows($sql2) > 0){
             
                while($row2 = mysqli_fetch_array($sql2)){
@@ -49,7 +48,7 @@ if(isset($_GET["pxua"])){
 
     $sqlPredec = mysqli_query($conexionBD,
     "SELECT rel_actv_modulo.id_rel_am, actividades.id_actividad, actividades.descripcion, actividades.unidad, 
-            rel_actv_modulo.catidad, rel_actv_modulo.unitario, modulos.nombre, rel_actv_modulo.fecha_ini_actv, rel_actv_modulo.fecha_fin_actv, actividades.orden 
+            rel_actv_modulo.catidad, rel_actv_modulo.unitario, modulos.nombre, rel_actv_modulo.fecha_ini_actv, rel_actv_modulo.fecha_fin_actv, rel_actv_modulo.orden 
      FROM actividades, rel_actv_modulo, modulos 
      WHERE rel_actv_modulo.id_modulo = '".$id_modulo."' 
      AND actividades.id_actividad = rel_actv_modulo.id_actividad 
@@ -74,13 +73,14 @@ if(isset($_GET["pxua"])){
                 'actividad' => $row2[2],
                 'unidad' => $row2[3],
                 'cantidad' => $row2[4],
-                'materiales' => A($conexionBD, $id_a),
-                'manoObra' => B($conexionBD, $id_a, $Ben_Soc, $iva),
-                'equipo' => F($conexionBD, $id_a, $he_men),
+                'materiales' => A($conexionBD, $id_proyec, $id_a),
+                'manoObra' => B($conexionBD,  $id_proyec, $id_a, $Ben_Soc, $iva),
+                'equipo' => F($conexionBD, $id_proyec, $id_a, $he_men),
                 'g_grales' => $g_grales,
                 'utilidad' => $utilidad,
                 'it' => $IT,
-                'he_men' => $he_men
+                'he_men' => $he_men,
+                'id_rel_am' => $row2[0]
             ];
            
             array_push($pxuModulo, $puXact);
@@ -91,12 +91,12 @@ if(isset($_GET["pxua"])){
     else{  echo json_encode(["success"=>0]); }
 }
 
-function A($conexionBD, $id){
+function A($conexionBD, $id_proyec, $id){
     $A = new stdClass();
     $m = new stdClass();
     $mats = array();
     $sqlPredec = mysqli_set_charset($conexionBD, "utf8"); 
-    $sqlPredec = mysqli_query($conexionBD,"SELECT actividades.descripcion, materiales.descripcion, rel_actv_mat.id_rel, rel_actv_mat.cant_por_acti, materiales.unidad, materiales.PU
+    $sqlPredec = mysqli_query($conexionBD,"SELECT actividades.descripcion, materiales.descripcion, rel_actv_mat.id_rel, rel_actv_mat.cant_por_acti, materiales.unidad, materiales.PU, materiales.id_mat
                 FROM actividades, materiales, rel_actv_mat
                 WHERE rel_actv_mat.id_actividad = '$id' AND rel_actv_mat.id_mat = materiales.id_mat AND actividades.id_actividad = rel_actv_mat.id_actividad ");
         if(mysqli_num_rows($sqlPredec) > 0){
@@ -105,8 +105,8 @@ function A($conexionBD, $id){
                     $nombre = $row2[1];
                     $unidad = $row2[4];
                     $cant = $row2[3];
-                    $pu = $row2[5];
-                    $parcial = $row2[3] * $row2[5];
+                    $pu = intersecc($conexionBD, 'pu_us_mat', $id_proyec, $row2[6], $row2[5]);
+                    $parcial = $row2[3] * $pu;
                     $m = ["nombre"=>$nombre, "unidad"=>$unidad, "cant"=>$cant, "pu"=>$pu, "parcial"=> $parcial];
                     array_push($mats, $m);
                 }
@@ -128,12 +128,12 @@ function A($conexionBD, $id){
  
         return $A; 
 }
-function B($conexionBD, $id, $Ben_Soc, $iva){
+function B($conexionBD, $id_proyec, $id, $Ben_Soc, $iva){
     $B = new stdClass();
     $mObra = new stdClass();
     $mo = array();
     $sqlPredec = mysqli_query($conexionBD,
-        "SELECT actividades.descripcion, mano_obra.descripcion,  rel_actv_mo.id_rel_mat_mo, rel_actv_mo.cant, mano_obra.unidad, mano_obra.PU
+        "SELECT actividades.descripcion, mano_obra.descripcion,  rel_actv_mo.id_rel_mat_mo, rel_actv_mo.cant, mano_obra.unidad, mano_obra.PU, mano_obra.id_mo
          FROM actividades, mano_obra, rel_actv_mo
          WHERE rel_actv_mo.id_actividad = '$id' AND rel_actv_mo.id_mo = mano_obra.id_mo AND actividades.id_actividad = rel_actv_mo.id_actividad ");
         if(mysqli_num_rows($sqlPredec) > 0){
@@ -142,8 +142,8 @@ function B($conexionBD, $id, $Ben_Soc, $iva){
                 $nombre = $row2[1];
                 $unidad = $row2[4];
                 $cant = $row2[3];
-                $pu = $row2[5];
-                $parcial = $row2[3] * $row2[5];
+                $pu = intersecc($conexionBD, 'pu_us_mo', $id_proyec, $row2[6], $row2[5]);
+                $parcial = $row2[3] * $pu;
                 $mObra = ["nombre"=>$nombre, "unidad"=>$unidad, "cant"=>$cant, "pu"=>$pu, "parcial"=> $parcial];
                 array_push($mo, $mObra);
             }
@@ -169,12 +169,12 @@ function B($conexionBD, $id, $Ben_Soc, $iva){
         $B-> E = round($sum+$c+$d,2);
         return $B;
 }
-function F($conexionBD, $id, $he_men){
+function F($conexionBD, $id_proyec, $id, $he_men){
     $F = new stdClass();
     $equipo = new stdClass();
     $eq = array();
     $sqlPredec = mysqli_query($conexionBD,
-    "SELECT actividades.descripcion, equipo.descripcion,  rel_actv_equip.id_rel_mat_equip, rel_actv_equip.cant, equipo.unidad, equipo.PU 
+    "SELECT actividades.descripcion, equipo.descripcion,  rel_actv_equip.id_rel_mat_equip, rel_actv_equip.cant, equipo.unidad, equipo.PU, equipo.id_equip
     FROM actividades, equipo, rel_actv_equip
     WHERE rel_actv_equip.id_actividad = '$id' AND rel_actv_equip.id_equip = equipo.id_equip AND actividades.id_actividad = rel_actv_equip.id_actividad");
     if(mysqli_num_rows($sqlPredec) > 0){
@@ -183,8 +183,8 @@ function F($conexionBD, $id, $he_men){
             $nombre = $row2[1];
             $unidad = $row2[4];
             $cant = $row2[3];
-            $pu = $row2[5];
-            $parcial = $row2[3] * $row2[5];
+            $pu = intersecc($conexionBD, 'pu_us_eq', $id_proyec, $row2[6], $row2[5]);
+            $parcial = $row2[3] * $pu;
             $parcial = round($parcial,2);
             $equipo = ["nombre"=>$nombre, "unidad"=>$unidad, "cant"=>$cant, "pu"=>$pu, "parcial"=> $parcial];
             array_push($eq, $equipo);
@@ -206,6 +206,24 @@ function F($conexionBD, $id, $he_men){
     $F -> H = round($g+$sum,2);
 
     return $F;
+
+}
+
+function intersecc($conexionBD, $tabla, $id_proyecto, $id_insumo, $p_insumo){
+    $sqlPredec = mysqli_set_charset($conexionBD, "utf8"); 
+    $sqlPredec = mysqli_query($conexionBD,
+                 "SELECT id, pu_us
+                  FROM $tabla
+                  WHERE id_proyecto = '$id_proyecto'
+                  AND id_insumo = '$id_insumo'");
+        if(mysqli_num_rows($sqlPredec) > 0){
+            while($row2 = mysqli_fetch_array($sqlPredec)){
+                return $row2[1];
+            }
+
+        }else { 
+            return $p_insumo;
+        }
 
 }
 

@@ -62,7 +62,8 @@ if(isset($_GET["insertar"])){
     $grupo_insumo=$data->grupo_insumo;
     $jornal=$data->jornal;
     $mes=$data->mes;
-    $sqlPredec = mysqli_query($conexionBD,"INSERT INTO mano_obra (descripcion, unidad, PU, jornal, mes, grupo_insumo) VALUES('$descripcion', '$unidad', '$PU', '$jornal', '$mes', '$grupo_insumo') ");
+    $jerarquia= $data ->jerarquia;
+    $sqlPredec = mysqli_query($conexionBD,"INSERT INTO mano_obra (descripcion, unidad, PU, jornal, mes, grupo_insumo, jerarquia) VALUES('$descripcion', '$unidad', '$PU', '$jornal', '$mes', '$grupo_insumo', '$jerarquia') ");
     echo json_encode(["success"=>1]);
     exit();
 }
@@ -78,7 +79,8 @@ if(isset($_GET["actualizar"])){
     $grupo_insumo=$data->grupo_insumo;
     $jornal=$data->jornal;
     $mes=$data->mes;
-    $sqlPredec = mysqli_query($conexionBD,"UPDATE mano_obra SET descripcion ='$descripcion' , unidad='$unidad' , PU='$PU', jornal= '$jornal', mes='$mes',  grupo_insumo='$grupo_insumo' WHERE id_mo='$id_mo'");
+    $jerarquia= $data ->jerarquia;
+    $sqlPredec = mysqli_query($conexionBD,"UPDATE mano_obra SET descripcion ='$descripcion' , unidad='$unidad' , PU='$PU', jornal= '$jornal', mes='$mes',  grupo_insumo='$grupo_insumo', jerarquia='$jerarquia' WHERE id_mo='$id_mo'");
     echo json_encode(["success"=>1, "mensaje:"=>2]);
     exit();
 }

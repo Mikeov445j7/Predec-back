@@ -69,7 +69,7 @@
                                     'codigo'=>$row3[4],
                                     'fecha_inicio'=>$row3[6]
                                     ],
-                        'listadeActiv'=>actiXmods($conexionBD,$row3[0],$Ben_Soc,$iva,$he_men,$g_grales,$utilidad,$IT)
+                        'listadeActiv'=>actiXmods($conexionBD, $id_proyec, $row3[0],$Ben_Soc,$iva,$he_men,$g_grales,$utilidad,$IT)
                     ];
                     array_push($modsXproyecto, $actiXmods);
                 }
@@ -80,7 +80,7 @@
             }
             else{  echo json_encode(["success"=>0]); }    
     }
-    function actiXmods($conexionBD, $id_modulo, $Ben_Soc,$iva,$he_men,$g_grales,$utilidad,$IT){
+    function actiXmods($conexionBD, $id_proyec, $id_modulo, $Ben_Soc,$iva,$he_men,$g_grales,$utilidad,$IT){
         $listadeActiv = array();
         $sqlPredec = mysqli_set_charset($conexionBD, "utf8");
         $sqlPredec = mysqli_query($conexionBD,
@@ -102,9 +102,9 @@
                     'unidad' => $row2[3],
                     'catidad' =>  $row2[4]
                 ];
-                $A = A($conexionBD, $row2[1]);
-                $N = B($conexionBD, $row2[1]);
-                $C = F($conexionBD, $row2[1]);
+                $A = A($conexionBD, $id_proyec, $row2[1]); 
+                $N = B($conexionBD, $id_proyec, $row2[1]);
+                $C = F($conexionBD, $id_proyec, $row2[1]);
                 $A = floatval($A);
                 $N = floatval($N);
                 $C = floatval($C);
@@ -175,16 +175,18 @@
             return $listadeActiv;
         }
     }
-    function A($conexionBD, $id){
+    function A($conexionBD, $id_proyec, $id){
         $sqlPredec = mysqli_set_charset($conexionBD, "utf8"); 
-        $sqlPredec = mysqli_query($conexionBD,"SELECT actividades.descripcion, materiales.descripcion, rel_actv_mat.id_rel, rel_actv_mat.cant_por_acti, materiales.unidad, materiales.PU
+        $sqlPredec = mysqli_query($conexionBD,
+                    "SELECT actividades.descripcion, materiales.descripcion, rel_actv_mat.id_rel, rel_actv_mat.cant_por_acti, materiales.unidad, materiales.PU, materiales.id_mat
                     FROM actividades, materiales, rel_actv_mat
                     WHERE rel_actv_mat.id_actividad = '$id' AND rel_actv_mat.id_mat = materiales.id_mat AND actividades.id_actividad = rel_actv_mat.id_actividad ");
             if(mysqli_num_rows($sqlPredec) > 0){
                     //$materiales = mysqli_fetch_all($sqlPredec,MYSQLI_ASSOC);
                     $sum = 0;
                     while($row2 = mysqli_fetch_array($sqlPredec)){
-                        $parcial = $row2[3] * $row2[5];
+                        $pu = intersecc($conexionBD, 'pu_us_mat', $id_proyec, $row2[6], $row2[5]);
+                        $parcial = $row2[3] * $pu;
                         $sum = $sum + $parcial;
                     }
                     $A = $sum;
@@ -193,17 +195,18 @@
             }
             return $A; 
     }
-    function B($conexionBD, $id){
+    function B($conexionBD, $id_proyec, $id){
         $sqlPredec = mysqli_set_charset($conexionBD, "utf8");
         $sqlPredec = mysqli_query($conexionBD,
-            "SELECT actividades.descripcion, mano_obra.descripcion,  rel_actv_mo.id_rel_mat_mo, rel_actv_mo.cant, mano_obra.unidad, mano_obra.PU
+            "SELECT actividades.descripcion, mano_obra.descripcion,  rel_actv_mo.id_rel_mat_mo, rel_actv_mo.cant, mano_obra.unidad, mano_obra.PU, mano_obra.id_mo
              FROM actividades, mano_obra, rel_actv_mo
              WHERE rel_actv_mo.id_actividad = '$id' AND rel_actv_mo.id_mo = mano_obra.id_mo AND actividades.id_actividad = rel_actv_mo.id_actividad ");
             if(mysqli_num_rows($sqlPredec) > 0){
                 //$manoObra = mysqli_fetch_all($sqlPredec,MYSQLI_ASSOC);
                 $sum = 0;
                 while($row2 = mysqli_fetch_array($sqlPredec)){
-                    $parcial = $row2[3] * $row2[5];
+                    $pu = intersecc($conexionBD, 'pu_us_mo', $id_proyec, $row2[6], $row2[5]);
+                    $parcial = $row2[3] * $pu;
                     $sum = $sum + $parcial;
                 }
                 $B = $sum;
@@ -213,19 +216,20 @@
             }
             return $B;
     }
-    function F($conexionBD, $id){
+    function F($conexionBD,  $id_proyec, $id){
         $sqlPredec = mysqli_set_charset($conexionBD, "utf8");
         $F = new stdClass();
         $equipo = new stdClass();
         $eq = array();
         $sqlPredec = mysqli_query($conexionBD,
-        "SELECT actividades.descripcion, equipo.descripcion,  rel_actv_equip.id_rel_mat_equip, rel_actv_equip.cant, equipo.unidad, equipo.PU 
+        "SELECT actividades.descripcion, equipo.descripcion,  rel_actv_equip.id_rel_mat_equip, rel_actv_equip.cant, equipo.unidad, equipo.PU, equipo.id_equip
         FROM actividades, equipo, rel_actv_equip
         WHERE rel_actv_equip.id_actividad = '$id' AND rel_actv_equip.id_equip = equipo.id_equip AND actividades.id_actividad = rel_actv_equip.id_actividad");
         if(mysqli_num_rows($sqlPredec) > 0){
             $sum = 0;
             while($row2 = mysqli_fetch_array($sqlPredec)){
-                $parcial = $row2[3] * $row2[5];
+                $pu = intersecc($conexionBD, 'pu_us_eq', $id_proyec, $row2[6], $row2[5]);
+                $parcial = $row2[3] * $pu;
                 $sum = $sum + $parcial;
             }
             $F = $sum;
@@ -233,6 +237,24 @@
             $F = 0;
         }
         return $F;
+    }
+
+    function intersecc($conexionBD, $tabla, $id_proyecto, $id_insumo, $p_insumo){
+        $sqlPredec = mysqli_set_charset($conexionBD, "utf8"); 
+        $sqlPredec = mysqli_query($conexionBD,
+                     "SELECT id, pu_us
+                      FROM $tabla
+                      WHERE id_proyecto = '$id_proyecto'
+                      AND id_insumo = '$id_insumo'");
+            if(mysqli_num_rows($sqlPredec) > 0){
+                while($row2 = mysqli_fetch_array($sqlPredec)){
+                    return $row2[1];
+                }
+    
+            }else { 
+                return $p_insumo;
+            }
+    
     }
 
 ?>

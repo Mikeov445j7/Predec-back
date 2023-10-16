@@ -237,4 +237,23 @@ else{
     //echo json_encode([["success"=>0]]); 
 }
 
+
+function intersecc($conexionBD, $tabla, $id_proyecto, $id_insumo, $p_insumo){
+    $sqlPredec = mysqli_set_charset($conexionBD, "utf8"); 
+    $sqlPredec = mysqli_query($conexionBD,
+                 "SELECT id, pu_us
+                  FROM $tabla
+                  WHERE id_proyecto = '$id_proyecto'
+                  AND id_insumo = '$id_insumo'");
+        if(mysqli_num_rows($sqlPredec) > 0){
+            while($row2 = mysqli_fetch_array($sqlPredec)){
+                return $row2[1];
+            }
+
+        }else { 
+            return $p_insumo;
+        }
+
+}
+
 ?>
