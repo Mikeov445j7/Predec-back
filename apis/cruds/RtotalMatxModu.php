@@ -8,7 +8,7 @@
     // Conecta a la base de datos  con usuario, contrase�a y nombre de la BD
     //$servidor = "localhost:3306"; $usuario = "boliviad_bduser1"; $contrasenia = "Prede02082016"; $nombreBaseDatos = "boliviad_predeconst";
     //$servidor = "localhost"; $usuario = "root"; $contrasenia = ""; $nombreBaseDatos = "predeconst";
-    $servidor = "localhost:3306"; $usuario = "www_root"; $contrasenia = "RcomiC150980"; $nombreBaseDatos = "www_predeconst";
+    $servidor = "localhost"; $usuario = "c1402643_predec"; $contrasenia = "22poWEzodu"; $nombreBaseDatos = "c1402643_predec";
     $conexionBD = new mysqli($servidor, $usuario, $contrasenia, $nombreBaseDatos);
  if(isset($_GET["RtotalMatxModu"])){
     $data = json_decode(file_get_contents("php://input"));
@@ -117,7 +117,7 @@ function actiXmods($conexionBD, $id_proyec, $id_modulo){
     if(mysqli_num_rows($sqlPredec) > 0){
         while($row2 = mysqli_fetch_array($sqlPredec)){
             $pu = intersecc($conexionBD, 'pu_us_mat', $id_proyec, $row2[13], $row2[9]);
-            $costoT = $row2[13] * $pu;
+            $costoT = $row2[12] * $pu;
             $dataActv = [
                 "modulo" => $row2[0],
                 "cantXmodulo" => $row2[1],
@@ -148,7 +148,7 @@ function intersecc($conexionBD, $tabla, $id_proyecto, $id_insumo, $p_insumo){
     $sqlPredec = mysqli_set_charset($conexionBD, "utf8"); 
     $sqlPredec = mysqli_query($conexionBD,
                  "SELECT id, pu_us
-                  FROM $tabla
+                  FROM pu_us_mat
                   WHERE id_proyecto = '$id_proyecto'
                   AND id_insumo = '$id_insumo'");
         if(mysqli_num_rows($sqlPredec) > 0){

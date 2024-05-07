@@ -8,12 +8,13 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 // Conecta a la base de datos  con usuario, contraseña y nombre de la BD
 //$servidor = "localhost:3306"; $usuario = "boliviad_bduser1"; $contrasenia = "Prede02082016"; $nombreBaseDatos = "boliviad_predeconst";
 //$servidor = "localhost"; $usuario = "root"; $contrasenia = ""; $nombreBaseDatos = "predeconst";
-$servidor = "localhost:3306"; $usuario = "www_root"; $contrasenia = "RcomiC150980"; $nombreBaseDatos = "www_predeconst";
+$servidor = "localhost"; $usuario = "c1402643_predec"; $contrasenia = "22poWEzodu"; $nombreBaseDatos = "c1402643_predec";
 $conexionBD = new mysqli($servidor, $usuario, $contrasenia, $nombreBaseDatos);
 $tabla = 'proyectos';
 
 // Consulta datos y recepciona una clave para consultar dichos datos con dicha clave
 if (isset($_GET["listar"])){
+    $sqlPredec = mysqli_set_charset($conexionBD, "utf8"); 
     $sqlPredec = mysqli_query($conexionBD,"SELECT * FROM $tabla");
     if(mysqli_num_rows($sqlPredec) > 0){
         $empleaados = mysqli_fetch_all($sqlPredec,MYSQLI_ASSOC);
@@ -23,6 +24,7 @@ if (isset($_GET["listar"])){
     else{  echo json_encode(["success"=>0]); }
 }
 if (isset($_GET["consultar"])){
+    $sqlPredec = mysqli_set_charset($conexionBD, "utf8"); 
     $sqlPredec = mysqli_query($conexionBD,"SELECT * FROM $tabla WHERE id_proyec=".$_GET["consultar"]);
     if(mysqli_num_rows($sqlPredec) > 0){
         $empleaados = mysqli_fetch_all($sqlPredec,MYSQLI_ASSOC);
@@ -32,6 +34,7 @@ if (isset($_GET["consultar"])){
     else{  echo json_encode(["success"=>0]); }
 }
 if (isset($_GET["id_us"])){
+    $sqlPredec = mysqli_set_charset($conexionBD, "utf8"); 
     $sqlPredec = mysqli_query($conexionBD,"SELECT * FROM $tabla WHERE id_us=".$_GET["id_us"]);
     if(mysqli_num_rows($sqlPredec) > 0){
         $empleaados = mysqli_fetch_all($sqlPredec,MYSQLI_ASSOC);
@@ -43,6 +46,7 @@ if (isset($_GET["id_us"])){
     }
 }
 if (isset($_GET["buscarPUS"])){
+    $sqlPredec = mysqli_set_charset($conexionBD, "utf8"); 
     $data = json_decode(file_get_contents("php://input"));
     $id_us=$data->id_us;
     $param=$data->param;
@@ -55,6 +59,7 @@ if (isset($_GET["buscarPUS"])){
     else{  echo json_encode(["success"=>0]); }
 }
 if (isset($_GET["buscar"])){
+    $sqlPredec = mysqli_set_charset($conexionBD, "utf8"); 
     $sqlPredec = mysqli_query($conexionBD,"SELECT * FROM $tabla WHERE nombre LIKE '%".$_GET["buscar"]."%'");
     if(mysqli_num_rows($sqlPredec) > 0){
         $empleaados = mysqli_fetch_all($sqlPredec,MYSQLI_ASSOC);
@@ -65,6 +70,7 @@ if (isset($_GET["buscar"])){
 }
 //borrar pero se le debe de enviar una clave ( para borrado )
 if (isset($_GET["borrar"])){
+    $sqlPredec = mysqli_set_charset($conexionBD, "utf8"); 
     $sqlPredec = mysqli_query($conexionBD,"DELETE FROM $tabla WHERE id_proyec=".$_GET["borrar"]);
     if($sqlPredec){
         echo json_encode(["success"=>1]);

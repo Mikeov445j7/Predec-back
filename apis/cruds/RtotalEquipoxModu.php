@@ -8,7 +8,7 @@
     // Conecta a la base de datos  con usuario, contraseña y nombre de la BD
     //$servidor = "localhost:3306"; $usuario = "boliviad_bduser1"; $contrasenia = "Prede02082016"; $nombreBaseDatos = "boliviad_predeconst";
     //$servidor = "localhost"; $usuario = "root"; $contrasenia = ""; $nombreBaseDatos = "predeconst";
-    $servidor = "localhost:3306"; $usuario = "www_root"; $contrasenia = "RcomiC150980"; $nombreBaseDatos = "www_predeconst";
+    $servidor = "localhost"; $usuario = "c1402643_predec"; $contrasenia = "22poWEzodu"; $nombreBaseDatos = "c1402643_predec";
     $conexionBD = new mysqli($servidor, $usuario, $contrasenia, $nombreBaseDatos);
  if(isset($_GET["RtotalEquipoxModu"])){
     $data = json_decode(file_get_contents("php://input"));
@@ -58,7 +58,7 @@
 function modulos($id_proyec, $conexionBD){
     $modsXproyecto = Array();
     //$actiXmods = new stdClass();
-    
+    $sqlPredec = mysqli_set_charset($conexionBD, "utf8"); 
     $sqlPredec = mysqli_query($conexionBD,"SELECT id_modulo, nombre, orden, codigo, fecha_inicio FROM modulos WHERE id_proyec = '".$id_proyec."' ORDER by orden ASC");
     if(mysqli_num_rows($sqlPredec) > 0){
         while($row3 = mysqli_fetch_array($sqlPredec)){
@@ -83,6 +83,7 @@ function actiXmods($conexionBD, $id_proyec, $id_modulo){
     $sqlPredec = mysqli_set_charset($conexionBD, "utf8"); 
     $listadeActiv = array();
     $dataActv = new stdClass();
+    $sqlPredec = mysqli_set_charset($conexionBD, "utf8"); 
     $sqlPredec = mysqli_query($conexionBD,
     "SELECT rel_actv_modulo.id_modulo AS modulos, 
             rel_actv_modulo.catidad AS cantXmodulo, 

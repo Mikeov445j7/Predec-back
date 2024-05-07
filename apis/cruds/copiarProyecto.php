@@ -8,7 +8,7 @@
     // Conecta a la base de datos  con usuario, contraseña y nombre de la BD
     //$servidor = "localhost:3306"; $usuario = "boliviad_bduser1"; $contrasenia = "Prede02082016"; $nombreBaseDatos = "boliviad_predeconst";
     //$servidor = "localhost"; $usuario = "root"; $contrasenia = ""; $nombreBaseDatos = "predeconst";
-    $servidor = "localhost:3306"; $usuario = "www_root"; $contrasenia = "RcomiC150980"; $nombreBaseDatos = "www_predeconst";
+    $servidor = "localhost"; $usuario = "c1402643_predec"; $contrasenia = "22poWEzodu"; $nombreBaseDatos = "c1402643_predec";
     $conexionBD = new mysqli($servidor, $usuario, $contrasenia, $nombreBaseDatos);
 
 
@@ -19,6 +19,7 @@ if(isset($_GET["CopiarProyecto"])){
         $id_us_destino = $data->id_us_destino;
         //$id_proyec = 10;
         //$id_us_destino = 10;
+        $sqlPredec = mysqli_set_charset($conexionBD, "utf8"); 
         $sql = mysqli_query($conexionBD,"SELECT * FROM proyectos WHERE id_proyec = '".$id_proyec."'");
     if(mysqli_num_rows($sql) > 0){
         while($row = mysqli_fetch_array($sql)){
@@ -45,6 +46,7 @@ if(isset($_GET["CopiarProyecto"])){
 }
 function copia_proyecto($conexionBD, $id_us, $id_proyecOr,$nombre,$codigo,$Ben_Soc,$iva,$he_men,$g_grales,$utilidad,$IT,$cliente,$tip_cambio,$fecha,$ubicacion){
     $fecha_creacion = Date('Y-m-d');
+    
    $insertar = mysqli_query($conexionBD, 
    "INSERT INTO `proyectos`(`id_us`, `nombre`, `codigo`, `fecha_creacion`, `Ben_Soc`, `iva`, `he_men`, `g_grales`, `utilidad`, `IT`, `cliente`, `tip_cambio`, `fecha`, `ubicacion`, `id_proyecOr`) 
                     VALUES ('$id_us', '$nombre', '$codigo', '$fecha_creacion', '$Ben_Soc', '$iva', '$he_men', '$g_grales', '$utilidad', '$IT','$cliente', '$tip_cambio', '$fecha', '$ubicacion', '$id_proyecOr')");
@@ -68,7 +70,7 @@ function copia_proyecto($conexionBD, $id_us, $id_proyecOr,$nombre,$codigo,$Ben_S
     
 }
 function llama_modulos($conexionBD, $id_proyec, $id_proyecOr){
-    
+    $sql = mysqli_set_charset($conexionBD, "utf8"); 
     $sql = mysqli_query($conexionBD, "SELECT * FROM modulos WHERE id_proyec = '".$id_proyecOr."'");
     if(mysqli_num_rows($sql) > 0){
    
@@ -103,6 +105,7 @@ function copia_modulo($conexionBD, $id_proyec,$orden,$nombre,$codigo,$id_modOr){
 function Llama_actividades($conexionBD, $id_modulo,$id_modOr){
     $fecha_ini_actv = Date('Y-m-d');
     $fecha_fin_actv = Date('Y-m-d');
+    $sql = mysqli_set_charset($conexionBD, "utf8");
     $sql = mysqli_query($conexionBD, "SELECT * FROM rel_actv_modulo WHERE id_modulo = '".$id_modOr."'");
     if(mysqli_num_rows($sql) > 0){
             while($row = mysqli_fetch_array($sql)){

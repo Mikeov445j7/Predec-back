@@ -8,12 +8,13 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 // Conecta a la base de datos  con usuario, contraseña y nombre de la BD
 //$servidor = "localhost:3306"; $usuario = "boliviad_bduser1"; $contrasenia = "Prede02082016"; $nombreBaseDatos = "boliviad_predeconst";
 //$servidor = "localhost"; $usuario = "root"; $contrasenia = ""; $nombreBaseDatos = "predeconst";
-$servidor = "localhost:3306"; $usuario = "www_root"; $contrasenia = "RcomiC150980"; $nombreBaseDatos = "www_predeconst";
+$servidor = "localhost"; $usuario = "c1402643_predec"; $contrasenia = "22poWEzodu"; $nombreBaseDatos = "c1402643_predec";
 $conexionBD = new mysqli($servidor, $usuario, $contrasenia, $nombreBaseDatos);
 $tabla = 'modulos';
 
 // Consulta datos y recepciona una clave para consultar dichos datos con dicha clave
 if (isset($_GET["consultar"])){
+     $sqlPredec = mysqli_set_charset($conexionBD, "utf8"); 
     $sqlPredec = mysqli_query($conexionBD,"SELECT * FROM $tabla WHERE id_modulo=".$_GET["consultar"]);
     if(mysqli_num_rows($sqlPredec) > 0){
         $empleaados = mysqli_fetch_all($sqlPredec,MYSQLI_ASSOC);
@@ -23,6 +24,7 @@ if (isset($_GET["consultar"])){
     else{  echo json_encode(["success"=>0]); }
 }
 if (isset($_GET["proyecto"])){
+     $sqlPredec = mysqli_set_charset($conexionBD, "utf8"); 
     $sqlPredec = mysqli_query($conexionBD,"SELECT * FROM $tabla WHERE id_proyec=".$_GET["proyecto"]." ORDER by orden ASC");
     if(mysqli_num_rows($sqlPredec) > 0){
         $empleaados = mysqli_fetch_all($sqlPredec,MYSQLI_ASSOC);
@@ -32,6 +34,7 @@ if (isset($_GET["proyecto"])){
     else{  echo json_encode(["success"=>0]); }
 }
 if (isset($_GET["buscar"])){
+     $sqlPredec = mysqli_set_charset($conexionBD, "utf8"); 
     $sqlPredec = mysqli_query($conexionBD,"SELECT * FROM $tabla WHERE nombre LIKE '%".$_GET["buscar"]."%'");
     if(mysqli_num_rows($sqlPredec) > 0){
         $empleaados = mysqli_fetch_all($sqlPredec,MYSQLI_ASSOC);
@@ -100,6 +103,7 @@ if (isset($_GET["borrar"])){
 //ACTIVIDADES MODULO
 // veractividades modulo
 if (isset($_GET["modulo"])){
+    $sqlPredec = mysqli_set_charset($conexionBD, "utf8"); 
     $sqlPredec = mysqli_query($conexionBD,
     "SELECT rel_actv_modulo.id_rel_am, actividades.id_actividad, 
             actividades.descripcion, actividades.unidad, 

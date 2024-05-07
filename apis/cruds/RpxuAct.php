@@ -8,7 +8,7 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 // Conecta a la base de datos  con usuario, contraseña y nombre de la BD
 //$servidor = "localhost:3306"; $usuario = "boliviad_bduser1"; $contrasenia = "Prede02082016"; $nombreBaseDatos = "boliviad_predeconst";
 //$servidor = "localhost"; $usuario = "root"; $contrasenia = ""; $nombreBaseDatos = "predeconst";
-$servidor = "localhost:3306"; $usuario = "www_root"; $contrasenia = "RcomiC150980"; $nombreBaseDatos = "www_predeconst";
+$servidor = "localhost"; $usuario = "c1402643_predec"; $contrasenia = "22poWEzodu"; $nombreBaseDatos = "c1402643_predec";
 $conexionBD = new mysqli($servidor, $usuario, $contrasenia, $nombreBaseDatos);
 
 $tabla = 'actividades';
@@ -28,7 +28,7 @@ if(isset($_GET["pxua"])){
     $IT = 0;
     $nom_proy = "";
     $cadena ='';
- 
+    $sql2 = mysqli_set_charset($conexionBD, "utf8"); 
     $sql2 = mysqli_query($conexionBD,"SELECT * FROM proyectos WHERE id_proyec = '".$id_proyec."'");
         if(mysqli_num_rows($sql2) > 0){
             
@@ -45,7 +45,7 @@ if(isset($_GET["pxua"])){
                         $fecha = $row2[13];
                     }
           }
-
+    $sqlPredec = mysqli_set_charset($conexionBD, "utf8"); 
     $sqlPredec = mysqli_query($conexionBD,
     "SELECT rel_actv_modulo.id_rel_am, actividades.id_actividad, actividades.descripcion, actividades.unidad, 
             rel_actv_modulo.catidad, rel_actv_modulo.unitario, modulos.nombre, rel_actv_modulo.fecha_ini_actv, rel_actv_modulo.fecha_fin_actv, rel_actv_modulo.orden 
@@ -132,6 +132,7 @@ function B($conexionBD, $id_proyec, $id, $Ben_Soc, $iva){
     $B = new stdClass();
     $mObra = new stdClass();
     $mo = array();
+    $sqlPredec = mysqli_set_charset($conexionBD, "utf8"); 
     $sqlPredec = mysqli_query($conexionBD,
         "SELECT actividades.descripcion, mano_obra.descripcion,  rel_actv_mo.id_rel_mat_mo, rel_actv_mo.cant, mano_obra.unidad, mano_obra.PU, mano_obra.id_mo
          FROM actividades, mano_obra, rel_actv_mo
@@ -173,6 +174,7 @@ function F($conexionBD, $id_proyec, $id, $he_men){
     $F = new stdClass();
     $equipo = new stdClass();
     $eq = array();
+    $sqlPredec = mysqli_set_charset($conexionBD, "utf8"); 
     $sqlPredec = mysqli_query($conexionBD,
     "SELECT actividades.descripcion, equipo.descripcion,  rel_actv_equip.id_rel_mat_equip, rel_actv_equip.cant, equipo.unidad, equipo.PU, equipo.id_equip
     FROM actividades, equipo, rel_actv_equip

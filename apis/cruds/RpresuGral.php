@@ -8,7 +8,7 @@
     // Conecta a la base de datos  con usuario, contraseña y nombre de la BD
     //$servidor = "localhost:3306"; $usuario = "boliviad_bduser1"; $contrasenia = "Prede02082016"; $nombreBaseDatos = "boliviad_predeconst";
     //$servidor = "localhost"; $usuario = "root"; $contrasenia = ""; $nombreBaseDatos = "predeconst";
-    $servidor = "localhost:3306"; $usuario = "www_root"; $contrasenia = "RcomiC150980"; $nombreBaseDatos = "www_predeconst";
+    $servidor = "localhost"; $usuario = "c1402643_predec"; $contrasenia = "22poWEzodu"; $nombreBaseDatos = "c1402643_predec";
     $conexionBD = new mysqli($servidor, $usuario, $contrasenia, $nombreBaseDatos);
 
     if(isset($_GET["RpresuGral"])){
@@ -26,6 +26,7 @@
         $RpresuGral = new stdClass();
         $totales = array();
         $tabla = array();
+        $sql2 = mysqli_set_charset($conexionBD, "utf8"); 
         $sql2 = mysqli_query($conexionBD,"SELECT * FROM proyectos WHERE id_proyec = '".$id_proyec."'")
         or die(mysqli_error());
         if(mysqli_num_rows($sql2) > 0){
@@ -124,6 +125,7 @@ function modulos($conexionBD, $id_proyec){
     $A = floatval($A);
     $B = floatval($B);
     $C = floatval($C);
+    $sqlPredec = mysqli_set_charset($conexionBD, "utf8"); 
     $sqlPredec = mysqli_query($conexionBD,"SELECT * FROM modulos WHERE id_proyec = $id_proyec ORDER by orden ASC");
     if(mysqli_num_rows($sqlPredec) > 0){
  
@@ -144,7 +146,7 @@ function modulos($conexionBD, $id_proyec){
 }
 function actiXmods($conexionBD, $id_proyec, $id_modulo, $nom){
     $listadeActiv = array();
-    
+    $sqlPredec = mysqli_set_charset($conexionBD, "utf8"); 
     $sqlPredec = mysqli_query($conexionBD,
     "SELECT rel_actv_modulo.id_rel_am, actividades.id_actividad, rel_actv_modulo.catidad
      FROM actividades, rel_actv_modulo

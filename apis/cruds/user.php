@@ -9,7 +9,7 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 global $servidor;
 //$servidor = "localhost:3306"; $usuario = "boliviad_bduser1"; $contrasenia = "Prede02082016"; $nombreBaseDatos = "boliviad_predeconst";
 //$servidor = "localhost"; $usuario = "root"; $contrasenia = ""; $nombreBaseDatos = "predeconst";
-$servidor = "localhost:3306"; $usuario = "www_root"; $contrasenia = "RcomiC150980"; $nombreBaseDatos = "www_predeconst";
+$servidor = "localhost"; $usuario = "c1402643_predec"; $contrasenia = "22poWEzodu"; $nombreBaseDatos = "c1402643_predec";
 $conexionBD = new mysqli($servidor, $usuario, $contrasenia, $nombreBaseDatos);
 $tabla = "preda_us";
 
@@ -58,10 +58,11 @@ if(isset($_GET["insertar"])){
     $password=$data->password;
     $nombre=$data->nombre;
     $apellido=$data->apellido;
+    $cel=$data->cel;
     if($mail!=''&&$password!=''&&$nombre!=''&&$apellido!=''){
         $sqlPredec = mysqli_query($conexionBD,
         "INSERT INTO `preda_us`(`mail`, `password`, `nombre`, `apellido`, `genero`, `acercade`, `ip_user`, `img_profile`, `uninique_id`, `activo`, `distri`, `ci`, `premiun`, `cel`)
-         VALUES ('$mail','$password',' $nombre','$apellido','5','6','0','8','9','10','11','0','0','0')");
+         VALUES ('$mail','$password',' $nombre','$apellido','5','6','0','8','9','10','11','0','0', '$cel')");
         
             echo json_encode(["success"=>1]);
             exit();

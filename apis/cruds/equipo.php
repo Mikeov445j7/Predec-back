@@ -8,7 +8,7 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 // Conecta a la base de datos  con usuario, contraseña y nombre de la BD
 //$servidor = "localhost:3306"; $usuario = "boliviad_bduser1"; $contrasenia = "Prede02082016"; $nombreBaseDatos = "boliviad_predeconst";
 //$servidor = "localhost"; $usuario = "root"; $contrasenia = ""; $nombreBaseDatos = "predeconst";
-$servidor = "localhost:3306"; $usuario = "www_root"; $contrasenia = "RcomiC150980"; $nombreBaseDatos = "www_predeconst";
+$servidor = "localhost"; $usuario = "c1402643_predec"; $contrasenia = "22poWEzodu"; $nombreBaseDatos = "c1402643_predec";
 $conexionBD = new mysqli($servidor, $usuario, $contrasenia, $nombreBaseDatos);
 
 if (isset($_GET["listar"])){
@@ -45,6 +45,7 @@ if (isset($_GET["buscar"])){
 }
 //borrar pero se le debe de enviar una clave ( para borrado )
 if (isset($_GET["borrar"])){
+     $sqlPredec = mysqli_set_charset($conexionBD, "utf8"); 
     $sqlPredec = mysqli_query($conexionBD,"DELETE FROM equipo WHERE id_equip=".$_GET["borrar"]);
     if($sqlPredec){
         echo json_encode(["success"=>1]);
@@ -59,6 +60,7 @@ if(isset($_GET["insertar"])){
     $unidad=$data->unidad;
     $PU=$data->PU;
     $grupo_insumo=$data->grupo_insumo;
+    $sqlPredec = mysqli_set_charset($conexionBD, "utf8"); 
     $sqlPredec = mysqli_query($conexionBD,"INSERT INTO equipo (descripcion, unidad, PU, grupo_insumo) VALUES('$descripcion', '$unidad', '$PU', '$grupo_insumo') ");
     echo json_encode(["success"=>1]);
     exit();
@@ -73,7 +75,7 @@ if(isset($_GET["actualizar"])){
     $unidad=$data->unidad;
     $PU=$data->PU;
     $grupo_insumo=$data->grupo_insumo;
-   
+     $sqlPredec = mysqli_set_charset($conexionBD, "utf8"); 
     $sqlPredec = mysqli_query($conexionBD,"UPDATE equipo SET descripcion ='$descripcion' , unidad='$unidad', PU='$PU', grupo_insumo='$grupo_insumo' WHERE id_equip='$id_equip'");
     echo json_encode(["success"=>1]);
     exit();

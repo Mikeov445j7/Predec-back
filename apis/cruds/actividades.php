@@ -9,7 +9,7 @@ header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers
 global $servidor;
 //$servidor = "localhost:3306"; $usuario = "boliviad_bduser1"; $contrasenia = "Prede02082016"; $nombreBaseDatos = "boliviad_predeconst";
 //$servidor = "localhost"; $usuario = "root"; $contrasenia = ""; $nombreBaseDatos = "predeconst";
-$servidor = "localhost:3306"; $usuario = "www_root"; $contrasenia = "RcomiC150980"; $nombreBaseDatos = "www_predeconst";
+$servidor = "localhost"; $usuario = "c1402643_predec"; $contrasenia = "22poWEzodu"; $nombreBaseDatos = "c1402643_predec";
 global $conexionBD;
 $conexionBD = new mysqli($servidor, $usuario, $contrasenia, $nombreBaseDatos);
 global $tabla;
@@ -93,6 +93,7 @@ if (isset($_GET["mostarAct"])){
 //-----------------------------------------------------------------------------------//
 //borrar pero se le debe de enviar una clave ( para borrado )
 if (isset($_GET["borrar"])){
+    $sqlPredec = mysqli_set_charset($conexionBD, "utf8"); 
     $sqlPredec = mysqli_query($conexionBD,"DELETE FROM actividades WHERE id_actividad=".$_GET["borrar"]);
     if($sqlPredec){
         echo json_encode(["success"=>1]);
@@ -102,6 +103,7 @@ if (isset($_GET["borrar"])){
 }
 //Inserta un nuevo registro y recepciona en método post los datos de nombre y correo
 if(isset($_GET["insertar"])){
+    $sqlPredec = mysqli_set_charset($conexionBD, "utf8"); 
     $data = json_decode(file_get_contents("php://input"));
     $tipo=$data->tipo;
     $descripcion=$data->descripcion;
@@ -127,6 +129,7 @@ if(isset($_GET["insertar"])){
 
 // insrtar relacion actividad-insumo (MAT,MO, EQUIP)
 if(isset($_GET["relActvInsumo"])){
+    $sqlPredec = mysqli_set_charset($conexionBD, "utf8"); 
     $data = json_decode(file_get_contents("php://input"));
     $insumo=$data->insumo;
     if($insumo==1){
@@ -178,6 +181,7 @@ if(isset($_GET["relActvInsumo"])){
 }
 //QUITAR RELACION ITEM INSUMO
 if(isset($_GET["quitarRelActvInsumo"])){
+    $sqlPredec = mysqli_set_charset($conexionBD, "utf8"); 
     $data = json_decode(file_get_contents("php://input"));
     $insumo=$data->insumo;
     if($insumo==1){
@@ -214,7 +218,7 @@ if(isset($_GET["quitarRelActvInsumo"])){
 
 // Actualiza datos pero recepciona datos de nombre, correo y una clave para realizar la actualización
 if(isset($_GET["actualizar"])){
-    
+    $sqlPredec = mysqli_set_charset($conexionBD, "utf8"); 
     $data = json_decode(file_get_contents("php://input"));
 
     $id_actividad=(isset($data->id))?$data->id:$_GET["actualizar"];
